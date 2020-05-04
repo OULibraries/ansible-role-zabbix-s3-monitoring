@@ -1,0 +1,4 @@
+# Flexible parameter to grab global variables. On the frontend side, use keys like {{ s3monitor_template_key }.size[filename].
+UserParameter={{ s3monitor_template_key }}.discovery[*],python3 /opt/zabbix/s3monitordiscovery.py
+UserParameter={{ s3monitor_template_key }}.size[*],python3 /opt/zabbix/s3monitorsize.py $1
+UserParameter={{ s3monitor_template_key }}.timestamp[*],python3 /opt/zabbix/s3monitortimestamp.py $1

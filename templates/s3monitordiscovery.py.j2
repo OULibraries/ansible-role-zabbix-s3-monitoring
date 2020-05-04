@@ -1,0 +1,16 @@
+import boto3
+import json
+
+s3 = boto3.client('s3', aws_access_key_id='{{ s3monitor_aws_access_key }}', aws_secret_access_key="{{ s3monitor_aws_secret_access_key }}")
+prefix = "{{ s3monitor_aws_object_prefix }}"
+bucket = "{{ s3monitor_aws_bucket }}"
+objs = s3.list_objects_v2(Bucket=bucket,Prefix=prefix)['Contents']
+discovered = []
+
+for i in objs:
+    entry = \{"{{ s3monitor_template_macro }}": str(i['Key']{{ s3_key_args | default() }})\}
+    if entry not in discovered:
+        discovered.append(entry)
+
+data = {"data": d}
+print(json.dumps(data))

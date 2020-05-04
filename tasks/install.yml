@@ -1,0 +1,35 @@
+---
+
+- name: "Ensure target directories exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: zabbix
+  with_items:
+    - /etc/zabbix/zabbix_agentd.d/
+    - /opt/zabbix/
+
+- name: "Install UserParameters"
+  template:
+    src: userparameter_s3monitor.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.d/userparameter_s3monitor.conf
+    owner: zabbix
+
+- name: "Install S3 File Discovery script"
+  template:
+    src: s3monitordiscovery.py.j2
+    dest: /opt/zabbix/s3monitordiscovery.py
+    owner: zabbix
+
+- name: "Install S3 File Size Monitor script"
+  template:
+   src: s3monitorsize.py.j2
+   dest: /opt/zabbix/s3monitorsize.py
+   owner: zabbix
+
+- name: "Install S3 File Timestamp Monitor script"
+  template:
+    src: s3monitortimestamp.py.j2
+    dest: /opt/zabbix/s3monitortimestamp.py
+    owner: zabbix
+ 

@@ -1,0 +1,13 @@
+import boto3
+import sys
+
+s3 = boto3.client('s3', aws_access_key_id='{{ s3monitor_aws_access_key }}', aws_secret_access_key="{{ s3monitor_aws_secret_access_key }}")
+site = sys.argv[1]
+prefix = "{{ s3monitor_aws_object_prefix }}/" + site 
+bucket = "{{ s3monitor_aws_bucket }}"
+response = s3_client.list_objects_v2(Bucket=bucket, Prefix=prefix)
+all_objs = response['Contents']
+latest = max(all_objs, key=lambda x: x['LastModified'])
+
+print(int(latest['Size']))
+
