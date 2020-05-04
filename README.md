@@ -1,32 +1,89 @@
-Role Name
+ansible-role-zabbix-s3-monitoring
 =========
 
-A brief description of the role goes here.
+Installs and configures scripts which allows Zabbix to automatically discover and monitor file size and timestamps from AWS S3. 
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Python 3.6+ 
+* Boto3 
+* JSON
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+
+`s3monitor_aws_access_key`
+* AWS IAM Key with at least Read/List permissions for monitored bucket
+
+`s3monitor_aws_secret_access_key` 
+* AWS IAM Secret Key with at least Read/List permissions for monitored bucket
+
+`s3monitor_aws_object_prefix`  
+* Optional prefix to filter items within a bucket, if not provided all items in bucket will be monitored
+
+`s3monitor_aws_bucket`    
+* Bucket containing items to monitor
+
+_Both s3monitor_template_key and s3monitor_template_macro are combined to create the Zabbix key that the Zabbix Agent uses_ 
+
+`s3monitor_template_key`    
+* Key base as defined in Application Template in Zabbix (See Requirements)
+
+`s3monitor_template_macro`
+* Zabbix Template Key Macro
+
+`s3_key_args` 
+ * _Optional_
+ * Arguments to append to the filename returned from S3, useful if you need to trim/parse extensions off the file name or get portion of returned path
+    
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+The following need defined in a Zabbix Template to actually use the scripts
+* Discovery Rule
+    Key should have a `.discovery[]` suffix
+ * Size Item Prototype
+    Key should have a `.size[]` suffix
+ * Timestamp Item Prototype
+    Key should have a `.timestamp[]` suffix
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Demonstration of created files utilizing defined vars
 
+```
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: OULibraries.ansible-role-zabbix-s3-monitoring,
+               s3monitor_template_key: s3.file, # Key Base defined in Item Prototype 
+               s3monitor_template_macro: {#FILE}, # Macro defined in Item Prototype
+               s3_key_args: .split("/")[-1] # Get filename from full filepath
+           }
+```
 
+_userparameter_s3monitor.conf_
+```
+    UserParameter=s3.file.discovery[*] 
+    UserParameter=s3.file.size[*]
+    UserParamter=s3.file.timestamp[*]
+```
+  
+_s3monitordiscovery.py_
+```
+    ...
+        # Python List of LLD Item Prototypes
+        # This will result in an item being made the key s3.file[{#FILE}] 
+        # Where {#FILE} = item['Key'].split("/")[-1]
+        
+        entry = {"{#FILE}": str(item['Key'].split("/")[-1])}
+        if entry not in discovered:
+            discovered.append(entry)
+```
 License
 -------
 
@@ -35,4 +92,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Cody Bennett - codybennett@ou.edu
