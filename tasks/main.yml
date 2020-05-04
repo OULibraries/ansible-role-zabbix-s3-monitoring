@@ -1,2 +1,4 @@
 ---
 # tasks file for ansible-role-zabbix-s3-monitoring
+
+- include: install.yml
