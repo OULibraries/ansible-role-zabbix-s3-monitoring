@@ -61,7 +61,7 @@ Demonstration of created files utilizing defined vars
       roles:
          - { role: OULibraries.ansible-role-zabbix-s3-monitoring,
                s3monitor_template_key: s3.file, # Key Base defined in Item Prototype 
-               s3monitor_template_macro: {#FILE}, # Macro defined in Item Prototype
+               s3monitor_template_macro: '{% raw %}"{#FILE}"{% endraw %}', # Jinja doesn't play nice with '#' Macro defined in Item Prototype
                s3_key_args: .split("/")[-1] # Get filename from full filepath
            }
 ```
