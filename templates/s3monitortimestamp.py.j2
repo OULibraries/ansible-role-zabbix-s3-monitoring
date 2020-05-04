@@ -2,7 +2,7 @@ import boto3
 import sys
 import time
 
-s3 = boto3.client('s3', aws_access_key_id='{{ s3monitor_aws_access_key }}', aws_secret_access_key="{{ s3monitor_aws_secret_access_key }}")
+s3_client = boto3.client('s3', aws_access_key_id='{{ s3monitor_aws_access_key }}', aws_secret_access_key="{{ s3monitor_aws_secret_access_key }}")
 site = sys.argv[1]
 prefix = "{{ s3monitor_aws_object_prefix }}/" + site
 bucket = "{{ s3monitor_aws_bucket }}"
