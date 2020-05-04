@@ -7,8 +7,8 @@ bucket = "{{ s3monitor_aws_bucket }}"
 objs = s3.list_objects_v2(Bucket=bucket,Prefix=prefix)['Contents']
 discovered = []
 
-for i in objs:
-    entry = \{"{{ s3monitor_template_macro }}": str(i['Key']{{ s3_key_args | default() }})\}
+for item in objs:
+    entry = \{"{{ s3monitor_template_macro }}": str(item['Key']{{ s3_key_args | default() }})\}
     if entry not in discovered:
         discovered.append(entry)
 
