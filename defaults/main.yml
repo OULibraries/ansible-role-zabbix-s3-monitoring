@@ -1,9 +1,9 @@
 ---
 # defaults file for ansible-role-zabbix-s3-monitoring
-s3monitor_aws_access_key = None
-s3monitor_aws_secret_access_key = None
-s3monitor_aws_object_prefix = None
-s3monitor_aws_bucket = "/"
-s3monitor_template_macro = "s3"
-s3monitor_template_key = "s3.file"
-s3_key_args = None
+s3monitor_aws_access_key: None
+s3monitor_aws_secret_access_key: None
+s3monitor_aws_object_prefix: None
+s3monitor_aws_bucket: "/"
+s3monitor_template_macro: "s3"
+s3monitor_template_key: "s3.file"
+s3_key_args: None
